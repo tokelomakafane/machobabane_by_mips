@@ -79,6 +79,7 @@
         beq $t0, 1, summer
         beq $t0, 2, winter
         b invalid_season
+       
 
     summer:
         # Print prompt for planting technique
@@ -248,7 +249,7 @@
         li $v0, 4
         la $a0, message_invalid_season
         syscall
-        j plot
+        j season
 
     invalid_technique_summer:
         # Print message for invalid technique
