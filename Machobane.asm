@@ -118,29 +118,117 @@
         beq $t1, 2, relay_crop_summer
         b invalid_technique_summer
         
-    intercropping_summer:
-        # Intercropping for summer
-        # Similar logic for other crops
 
-        # Print prompt for plant 1
-        li $v0, 4
-        la $a0, prompt_plant1
-        syscall
+   
+      intercropping_summer:
+    # Intercropping for summer
+    # Print prompt for plant 1
+    li $v0, 4
+    la $a0, prompt_plant1
+    syscall
 
-        # Get user input for plant 1
-        li $v0, 5
-        syscall
-        sw $v0, pos
+    # Get user input for plant 1
+    li $v0, 5
+    syscall
+    sw $v0, pos
 
-        # Print prompt for number of seeds
-        li $v0, 4
-        la $a0, prompt_seeds
-        syscall
+    # Check if maize or beans seeds were planted
+    beq $v0, 1, plant_maize
+    beq $v0, 2, plant_beans
+    # Continue with other crops or logic if neither maize nor beans was selected
+    j end_simulation
 
-        # Get user input for number of seeds
-        li $v0, 5
-        syscall
-        sw $v0, maize
+plant_maize:
+    # Simulate planting maize
+    # Get user input for the number of maize seeds
+    li $v0, 4
+    la $a0, prompt_seeds
+    syscall
+
+    li $v0, 5
+    syscall
+    sw $v0, maize
+
+    # You can use the value in $v0 (maize seeds) to determine the number of plants
+    move $t2, $v0  # Number of maize seeds
+
+    # Loop to simulate growth
+    li $t3, 0  # Counter for growth
+    j growth_loop_maize  # Jump to the growth loop for maize
+
+plant_beans:
+    # Simulate planting beans
+    # Get user input for the number of beans seeds
+    li $v0, 4
+    la $a0, prompt_seeds
+    syscall
+
+    li $v0, 5
+    syscall
+    sw $v0, beans
+
+    # You can use the value in $v0 (beans seeds) to determine the number of plants
+    move $t2, $v0  # Number of beans seeds
+
+    # Loop to simulate growth
+    li $t3, 0  # Counter for growth
+    j growth_loop_beans  # Jump to the growth loop for beans
+
+# Continue with the rest of your code
+
+growth_loop_maize:
+    # Simulate growth process for maize
+    # Add any necessary logic based on soil conditions, fertilizer, etc.
+
+    # Print "+" for each maize plant
+    li $v0, 11  # Print character
+    li $a0, '+'  # The character to print
+    syscall
+
+    # Increment growth counter for maize
+    addi $t3, $t3, 1
+
+    # Check if reached desired growth based on the number of seeds
+    blt $t3, $t2, growth_loop_maize
+
+    # End the program after maize simulation
+    j end_simulation
+
+growth_loop_beans:
+    # Simulate growth process for beans
+    # Add any necessary logic based on soil conditions, fertilizer, etc.
+
+    # Print "*" for each bean plant
+    li $v0, 11  # Print character
+    li $a0, '*'  # The character to print
+    syscall
+
+    # Increment growth counter for beans
+    addi $t3, $t3, 1
+
+    # Check if reached desired growth based on the number of seeds
+    blt $t3, $t2, growth_loop_beans
+
+    # End the program after beans simulation
+    j end_simulation
+
+# Continue with the rest of your code
+   
+
+    
+
+
+
+
+end_simulation:
+    # This label marks the end of the simulation
+    # You can add any additional code here if needed
+
+# ... (your existing data section)
+
+        
+        
+        
 
         # Print message for successful planting
         li $v0, 4
