@@ -12,6 +12,7 @@
     potatoes:   .word 0
     maize:  .word 0
     beans:  .word 0
+    pumpkin: .word 0
     space:  .asciiz " by "
 
 .text
@@ -131,6 +132,7 @@
         li $v0, 5
         syscall
         sw $v0, pos
+        lw $t0, pos
 
         # Print prompt for number of seeds
         li $v0, 4
@@ -141,17 +143,17 @@
         li $v0, 5
         syscall
         sw $v0, maize
-        
-#*********************************************************                
+                
         # Print prompt for plant 2
         li $v0, 4
         la $a0, prompt_plant2
         syscall
 
-        # Get user input for plant 1
+        # Get user input for plant 2
         li $v0, 5
         syscall
         sw $v0, pos
+        lw $t2, pos
 
         # Print prompt for number of seeds
         li $v0, 4
@@ -161,40 +163,64 @@
         # Get user input for number of seeds
         li $v0, 5
         syscall
-        sw $v0, potatoes
-        lw $t6, potatoes 
+        sw $v0, pumpkin
+        lw $t6, pumpkin 
         
 #**************************************************************
-        #Growing User defined plants
+ #Growing User defined plants
         lw $t4, maize
         li $t5,0
-        li $9,0
-    loop:   #First loop for planting
-        beq $t5, $t4,next
+        
+        li $s3,1   #Wheat
+        li $s5,2   #Peas
+        li $s6,3   #Potatoes
+        
+        li $t8,0
+        
+        li $t9,0
+        add $t9,$t9,$t0    #Option One seleted
+        
+        
+    loop3:   #First loop for planting
+        beq $t5, $t4,next3
         li $v0, 4
-        beq $t9,$t0,sss
-        la $a0,seeds2
+        beq $t9,$s3,ssss   #when option 1
+        beq $t9,$s5,tttt   #when option 2
+        beq $t9,$s6,pppp   #when option 3
+        j end
+    pppp:
+        la $a0,pumkinseeds
         syscall
         addi $t5,$t5,1
-        j loop
-     sss:
-        la $a0,seeds
+        j loop3
+        
+    tttt:
+     	la $a0,beansseeds
         syscall
         addi $t5,$t5,1
-        j loop
-   next:   
+        j loop3
+        
+     ssss:
+        la $a0,maizeseeds
+        syscall
+        addi $t5,$t5,1
+        j loop3
+   next3:   
         li $v0, 4
         la $a0,nextl
         syscall
         
-        li $t5,0
-        
-        beq $t9,1,end
-        addi $t9,$t9,1
+        li $t5,0    
+        beq $t8,1,end
+        li $t8,1
         li $t4,0
-        add $t4,$t4,$t6
-        j loop
         
+        li $t9,0
+        add $t9,$t9,$t2
+        add $t4,$t4,$t6
+        j loop3 
+
+#*******************************************************************      
         
     end:     
         # Print message for successful planting
@@ -305,6 +331,8 @@
         syscall
         sw $v0, wheat
         lw $t6, wheat
+        
+        
 #**************************************************************
  #Growing User defined plants
         lw $t4, peas
@@ -319,46 +347,36 @@
         li $t9,0
         add $t9,$t9,$s2    #Option One seleted
         
-        #***********************
-        
-        #li $v0, 4
-        #la $a0, hhh
-        #syscall 
-        
-        #li $v0, 1
-        #la $a0,($t9)
-        #syscall
-        #j winter */
-        #***********************
         
         
-    loop3:   #First loop for planting
-        beq $t5, $t4,next3
+        
+    loop:   #First loop for planting
+        beq $t5, $t4,next
         li $v0, 4
-        beq $t9,$s3,ssss   #when option 1
-        beq $t9,$s5,tttt   #when option 2
-        beq $t9,$s6,pppp   #when option 3
+        beq $t9,$s3,sssss   #when option 1
+        beq $t9,$s5,ttttt   #when option 2
+        beq $t9,$s6,ppppp   #when option 3
         j end
-    pppp:
+    ppppp:
         la $a0,peasseeds
         syscall
         addi $t5,$t5,1
-        j loop3
+        j loop
         
-    tttt:
+   ttttt:
      	la $a0,potatoestseeds
         syscall
         addi $t5,$t5,1
-        j loop3
+        j loop
         
-     ssss:
+   sssss:
         la $a0,wheatseeds
         syscall
         addi $t5,$t5,1
-        j loop3
-   next3:   
+        j loop
+   next:   
         li $v0, 4
-        la $a0,nextl
+        la $a0,next
         syscall
         
         li $t5,0    
@@ -369,9 +387,9 @@
         li $t9,0
         add $t9,$t9,$s4
         add $t4,$t4,$t6
-        j loop3
-        
+        j loop 
 
+#*******************************************************************
         # Print message for successful planting
         li $v0, 4
         la $a0, message_successful_planting
@@ -440,24 +458,28 @@
     prompt_moisture: .asciiz "\nAdjust Moisture in the soil in scale from 1 to 10:\nMoisture: "
     prompt_season: .asciiz "\nChoose Sesson by Index:\n1.Summer\n2.Winter\nIndex: "
     prompt_technique: .asciiz "\nChoose Planting Technique by Index:\n1.Intercropping\n2.Relay Cropping System\nIndex: "
-    prompt_plant1: .asciiz "\nChoose Plant 1 by Index:\n1.Maize\n2.Beans\n3.Pumpkin\n4.Sorghum\n5.Watermelons\n6.Groundnuts\nIndex: "
+    prompt_plant1: .asciiz "\nChoose Plant 1 by Index:\n1.Maize\n2.Beans\n3.Pumpkin\nIndex: "
     prompt_seeds: .asciiz "\nEnter Number of seeds: "
     prompt_fertilizer: .asciiz "\nAdjust nutrients in the soil in scale from 1 to 10:\nFertilizer: "
     message_successful_planting: .asciiz "\nPlants are planted successfully. Wait for Harvest.\n"
     message_invalid_season: .asciiz "\nInvalid Season!!\n"
     message_invalid_technique: .asciiz "\nInvalid Planting Technique\n"
 
-#*************
-    prompt_plant2: .asciiz "\nChoose Second Plant by Index:\n1.Maize\n2.Beans\n3.Pumpkin\n4.Sorghum\n5.Watermelons\n6.Groundnuts\nIndex: "
-    prompt_plant3: .asciiz "\nChoose Plant 1 by Index:\n1.Wheat\n2.Peas\n3.Potatoes\n4.Sorghum\nIndex: "
-    prompt_plant4: .asciiz "\nChoose Second Plant by Index:\n1.Wheat\n2.Peas\n3.Potatoe\n4.Sorghum\nIndex: "
-    
-    seeds: .asciiz "+"
-    seeds2: .asciiz "-"
+
+
+#******************************************  
+    prompt_plant2: .asciiz "\nChoose Second Plant by Index:\n1.Maize\n2.Beans\n3.Pumpkin\nIndex: "
+    prompt_plant3: .asciiz "\nChoose Plant 1 by Index:\n1.Wheat\n2.Peas\n3.Potatoes\nIndex: "
+    prompt_plant4: .asciiz "\nChoose Second Plant by Index:\n1.Wheat\n2.Peas\n3.Potatoe\nIndex: "
+
+  
+    maizeseeds: .asciiz "+"
+    beansseeds: .asciiz "-"
+    pumkinseeds: .asciiz "-"
     peasseeds: .asciiz "|" 
     wheatseeds: .asciiz "/" 
     potatoestseeds: .asciiz "~" 
     nextl: .asciiz "\n"
     hhh: .asciiz "You entered: "
-    
+#********************************************  
   
