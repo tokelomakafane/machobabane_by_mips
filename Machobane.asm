@@ -12,6 +12,7 @@
     potatoes:   .word 0
     maize:  .word 0
     beans:  .word 0
+    space:  .asciiz " by "
 
 .text
     main:
@@ -23,23 +24,42 @@
     plot:
         # Print prompt for length dimensions
         li $v0, 4
-        la $a0, prompt_lenght
+        la $a0, prompt_length
         syscall
 
         # Get user input for length 
         li $v0, 5
         syscall
         sw $v0, len
-        
+
         # Print prompt for width dimensions
         li $v0, 4
         la $a0, prompt_width
         syscall
-	
-	# Get user input for  width
+
+        # Get user input for width
         li $v0, 5
         syscall
         sw $v0, wid
+
+        # Print plot dimensions
+        li $v0, 4
+        la $a0, plot_dimensions_prompt
+        syscall
+
+        # Print length
+        li $v0, 1
+        lw $a0, len
+        syscall
+
+        # Print width
+        li $v0, 4
+        la $a0, space
+        syscall
+
+        li $v0, 1
+        lw $a0, wid
+        syscall
 
     soil:
         # Print prompt for soil preparation
@@ -266,8 +286,9 @@
 
 .data
     welcome_message: .asciiz "Welcome to Machobane Planting System\n"
-    prompt_lenght: .asciiz "Please Enter the dimensions of the Field:\nLength: "
-    prompt_width: .asciiz "Please Enter the dimensions of the Field:\nWidth: "
+    plot_dimensions_prompt: .asciiz "Plot dimensions in meters squared: "
+    prompt_length: .asciiz "Enter the length of the plot in meters(m): "
+    prompt_width: .asciiz "Enter the width of the plot in meters(m):  "
     prompt_soil: .asciiz "\n\n\nNow prepare the soil for crop production: \n"
     prompt_moisture: .asciiz "Adjust Moisture in the soil in scale from 1 to 10:\nMoisture: "
     prompt_season: .asciiz "Choose Sesson by Index:\n1.Summer\n2.Winter\nIndex: "
