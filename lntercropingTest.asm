@@ -184,23 +184,26 @@
     loop3:   #First loop for planting
         beq $t5, $t4,next3
         li $v0, 4
-        beq $t9,$s3,ssss   #when option 1
-        beq $t9,$s5,tttt   #when option 2
-        beq $t9,$s6,pppp   #when option 3
+        beq $t9,$s3,xxxx   #when option 1
+        beq $t9,$s5,yyyy   #when option 2
+        beq $t9,$s6,zzzz   #when option 3
         j end
-    pppp:
+    xxxx:
+        li $v0, 4
         la $a0,pumkinseeds
         syscall
         addi $t5,$t5,1
         j loop3
         
-    tttt:
+    yyyy:
+        li $v0, 4
      	la $a0,beansseeds
         syscall
         addi $t5,$t5,1
         j loop3
         
-     ssss:
+     zzzz:
+        li $v0, 4
         la $a0,maizeseeds
         syscall
         addi $t5,$t5,1
@@ -358,25 +361,28 @@
         beq $t9,$s6,ppppp   #when option 3
         j end
     ppppp:
+        li $v0, 4
         la $a0,peasseeds
         syscall
         addi $t5,$t5,1
         j loop
         
    ttttt:
+        li $v0, 4
      	la $a0,potatoestseeds
         syscall
         addi $t5,$t5,1
         j loop
         
    sssss:
+        li $v0, 4
         la $a0,wheatseeds
         syscall
         addi $t5,$t5,1
         j loop
    next:   
         li $v0, 4
-        la $a0,next
+        la $a0,nextl
         syscall
         
         li $t5,0    
