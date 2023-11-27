@@ -18,6 +18,11 @@
     plant2: .word 0
     seeds1: .word 0
     seeds2: .word 0
+    prompt_enter_month: .asciiz "Enter the month: "
+    DEC:     .word 12
+    NOV:     .word 11
+   
+  current_month: .word 1  # Assuming the simulation starts in January
     
 
 .text
@@ -425,10 +430,222 @@ end_simulation:
         li $v0, 4
         la $a0, message_successful_planting
         syscall
+        
+        
+        
 
-        # End the program****************************************
-        li $v0, 10
+
+# Simulate Harvesting
+j simulation_loop  # Check if it jumps to simulation_loop
+
+
+#simulate harvesting***********************************************
+
+      #simulate harvesting***********************************************
+
+# Initialize the current month counter
+li $t4, 1
+
+# Maximum number of months for simulation (adjust as needed)
+li $t5, 12
+
+# Loop to simulate the passage of time (months)
+simulation_loop:
+    # Prompt user to enter the month
+    li $v0, 4
+    la $a0, prompt_enter_month
+    syscall
+
+    # Read user input (assuming integer input)
+    li $v0, 5
+    syscall
+    move $t2, $v0  # Store user input in $t2
+
+    # Check if it's time to harvest for plant 1
+    lw $t0, plant1
+    beq $t0, 1, harvest_maize1
+    beq $t0, 2, harvest_beans1
+    beq $t0, 3, harvest_sorghum1
+    # Handle other crops or invalid selection for plant 1
+
+    # Check if it's time to harvest for plant 2
+    lw $t1, plant2
+    beq $t1, 1, harvest_maize2
+    beq $t1, 2, harvest_beans2
+    beq $t1, 3, harvest_sorghum2
+    # Handle other crops or invalid selection for plant 2
+
+    # Continue with the rest of your code
+
+harvest_maize1:
+            # Check if it's time to harvest maize for plant 1 (November)
+            lw $t4, DEC
+            bne $t2, $t4, next_plant1  # Skip harvesting if not November
+
+
+        # Notify the user that it's time to harvest maize for plant 1
+        li $v0, 4
+        la $a0, message_harvest_maize1
         syscall
+
+        # ... (rest of the code for harvesting maize1)
+        li $v0, 4
+        la $a0, message_successful_harvest_maize1
+        syscall
+
+        # Clear the plant 1 data
+        sw $zero, plant1
+        sw $zero, seeds1
+
+        j next_plant1
+
+
+    harvest_beans1:
+         # Check if it's time to harvest maize for plant 1 (November)
+            lw $t4, NOV
+            bne $t2, $t4, next_plant1  # Skip harvesting if not November
+
+
+        # Notify the user that it's time to harvest maize for plant 1
+        li $v0, 4
+        la $a0, message_harvest_beans1
+        syscall
+
+        # ... (rest of the code for harvesting maize1)
+        li $v0, 4
+        la $a0, message_successful_harvest_beans1
+        syscall
+
+        # Clear the plant 1 data
+        sw $zero, plant1
+        sw $zero, seeds1
+
+        j next_plant1
+
+
+    harvest_sorghum1:
+        # Check if it's time to harvest maize for plant 1 (November)
+            lw $t4, NOV
+            bne $t2, $t4, next_plant1  # Skip harvesting if not November
+
+        # Notify the user that it's time to harvest sorghum for plant 1
+        li $v0, 4
+        la $a0, message_harvest_sorghum1
+        syscall
+
+        # ... (rest of the code for harvesting maize1)
+        li $v0, 4
+        la $a0, message_successful_harvest_sorghum1
+        syscall
+
+        # Clear the plant 1 data
+        sw $zero, plant1
+        sw $zero, seeds1
+        j next_plant1
+        
+        
+ next_plant1:
+        # Check if it's time to harvest for plant 2
+        beq $t1, 1, harvest_maize2
+        beq $t1, 2, harvest_beans2
+        beq $t1, 3, harvest_sorghum2
+        # Handle other crops or invalid selection for plant 2
+        
+               
+
+    harvest_maize2:
+    # Check if it's time to harvest maize for plant 2 (November)
+    lw $t4, DEC
+    bne $t2, $t4, next_plant1  # Skip harvesting if not November
+
+    # Notify the user that it's time to harvest maize for plant 2
+    li $v0, 4
+    la $a0, message_harvest_maize2
+    syscall
+
+    # ... (rest of the code for harvesting maize2)
+    li $v0, 4
+    la $a0, message_successful_harvest_maize2
+    syscall
+
+    # Clear the plant 2 data
+    sw $zero, plant2
+    sw $zero, seeds2
+    j end_simulation
+
+harvest_beans2:
+    # Check if it's time to harvest beans for plant 2 (November)
+    lw $t4, NOV
+    bne $t2, $t4, next_plant1  # Skip harvesting if not November
+    
+    
+    # Notify the user that it's time to harvest maize for plant 2
+    li $v0, 4
+    la $a0, message_harvest_beans2
+    syscall
+
+    # ... (rest of the code for harvesting maize2)
+    li $v0, 4
+    la $a0, message_successful_harvest_beans2
+    syscall
+
+    # Clear the plant 2 data
+    sw $zero, plant2
+    sw $zero, seeds2
+    j end_simulation
+    
+    
+    
+    
+harvest_sorghum2:
+    # Check if it's time to harvest beans for plant 2 (November)
+    lw $t4, NOV
+    bne $t2, $t4, next_plant1  # Skip harvesting if not November
+    
+    
+    # Notify the user that it's time to harvest maize for plant 2
+    li $v0, 4
+    la $a0, message_harvest_sorghum2
+    syscall
+
+    # ... (rest of the code for harvesting maize2)
+    li $v0, 4
+    la $a0, message_successful_harvest_sorghum2
+    syscall
+
+    # Clear the plant 2 data
+    sw $zero, plant2
+    sw $zero, seeds2
+    j end_simulation    
+    
+    
+ next_plant2:
+        # Check if it's time to harvest for plant 2
+        beq $t1, 1, harvest_maize2
+        beq $t1, 2, harvest_beans2
+        beq $t1, 3, harvest_sorghum2
+        # Handle other crops or invalid selection for plant 2    
+    
+                                                            
+
+# ...
+
+# Terminate the simulation
+j end_simulation
+
+
+
+
+# Loop to simulate the passage of time (months)
+
+
+
+
+
+li $v0, 10
+syscall
+
+#...........
 
     relay_crop_summer:
         # Relay Cropping for summer
@@ -580,4 +797,18 @@ end_simulation:
     message_invalid_technique: .asciiz "Invalid Planting Technique\n"
     prompt_plant1: .asciiz "\nEnter the plant type for plant 1 (1: Maize, 2: Beans, 3: Sorghum): "
     prompt_plant2: .asciiz "\nEnter the plant type for plant 2 (1: Maize, 2: Beans, 3: Sorghum): "
+    message_harvest_maize1: .asciiz "\nIt's time to harvest MAIZE for plant 1!\n"
+    message_successful_harvest_maize1: .asciiz "\nMAIZE for plant 1 successfully harvested!\n"
+    message_harvest_beans1: .asciiz "\nIt's time to harvest BEANS for plant 1!\n"
+    message_successful_harvest_beans1: .asciiz "\nBEANS for plant 1 successfully harvested!\n"
+    message_harvest_sorghum1: .asciiz "\nIt's time to harvest SORGHUM for plant 1!\n"
+    message_successful_harvest_sorghum1: .asciiz "\nSORGHUM for plant 1 successfully harvested!\n"
+    message_harvest_maize2: .asciiz "\nIt's time to harvest maize for plant 2!\n"
+    message_successful_harvest_maize2: .asciiz "\nMaize for plant 2 successfully harvested!\n"
+     message_harvest_beans2: .asciiz "\nIt's time to harvest BEANS for plant 2!\n"
+    message_successful_harvest_beans2: .asciiz "\nBEANS for plant 2 successfully harvested!\n"
+    message_harvest_sorghum2: .asciiz "\nIt's time to harvest SORGHUM for plant !\n"
+    message_successful_harvest_sorghum2: .asciiz "\nSORGHUM for plant 2 successfully harvested!\n"
+    message_end_of_harvesting: .asciiz "You are done"
+    
    
